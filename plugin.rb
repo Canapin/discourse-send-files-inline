@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
-# name: discourse-send-pdf-inline
-# about: serve all PDFs inline
+# name: discourse-send-files-inline
+# about: serve some files inline
 # version: 0.1
-# authors: Thomas Kalka (toka)
-# url: https://github.com/thoka/discourse-send-pdf-inline
+# authors: Coin-coin le Canapin
+# url: https://github.com/Canapin/discourse-send-files-inline
 
-module SendPdfInline
+module SendMediaInline
   module UploadsControllerExtension
-    def send_file( path,options={} )
-      options[:disposition] = :inline if options.key?(:content_type) and options[:content_type]=="application/pdf"
-      super(path,options)
+    def send_file(path, options={})
+      if options.key?(:content_type) && (options[:content_type] == "application/pdf" || options[:content_type].start_with?("video/"))
+        options[:disposition] = :inline
+      end
+      super(path, options)
     end
   end
 end
 
 after_initialize do
-  ::UploadsController.prepend SendPdfInline::UploadsControllerExtension
+  ::UploadsController.prepend SendMediaInline::UploadsControllerExtension
 end
