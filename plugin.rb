@@ -9,7 +9,8 @@
 module SendMediaInline
   module UploadsControllerExtension
     def send_file(path, options={})
-      if options.key?(:content_type) && (options[:content_type] == "application/pdf" || options[:content_type].start_with?("video/"))
+      Rails.logger.info("  >> content-type: #{options[:content_type]}")
+      if options.key?(:content_type) && (options[:content_type] == "application/pdf" || options[:content_type].index("video/") == 0)
         options[:disposition] = :inline
       end
       super(path, options)
